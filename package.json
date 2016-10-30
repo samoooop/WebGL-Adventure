@@ -1,0 +1,27 @@
+{
+  "name": "webgl-adv",
+  "version": "0.0.1",
+  "description": "WebGL-Adventure",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BobbyL2k/WebGL-Adventure.git"
+  },
+  "keywords": [
+    "WebGL"
+  ],
+  "author": "BobbyL2k",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BobbyL2k/WebGL-Adventure/issues"
+  },
+  "homepage": "https://github.com/BobbyL2k/WebGL-Adventure#readme",
+  "private": true,
+  "dependencies": {
+    "http-server": "^0.9.0"
+  }
+}
