@@ -1,11 +1,14 @@
 var scene = new THREE.Scene();
-var width = window.innerWidth;
-var height = window.innerHeight;
-var aspect = window.innerWidth / window.innerHeight;
+var GLDom = document.getElementById("GL");
+var width = GLDom.offsetWidth;
+var height = GLDom.offsetHeight;
+var aspect = width / height;
 var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+var dbCanvasDom = document.getElementById("debugCanvas");
+var dbCanvasCtx = dbCanvasDom.getContext("2d");
+renderer.setSize( width, height );
+GLDom.appendChild( renderer.domElement );
 
 var geometry = new THREE.SphereGeometry( 1, 10, 10 );
 // var material = new THREE.MeshNormalMaterial();
@@ -42,8 +45,26 @@ function render(frameTime, time) {
     renderer.render( scene, camera, bufferTexture );
 
     var gl = renderer.getContext();
-    var pixels = new Uint8Array(width * height * 4);
-    gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+    gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+    dbCanvasCtx.moveTo(10, 10);
+    dbCanvasCtx.lineTo(10+1, 10+1);
+    dbCanvasCtx.stroke();
+    dbCanvasCtx.moveTo(800, 400);
+    dbCanvasCtx.lineTo(0, 0);
+    dbCanvasCtx.stroke();
+    /// Canvas Code
+    for(var index=0; index<height*width*4; index+=1){
+        if(pixels[index] != 0){
+            var corX = (index / 4) % width;
+            var corY = (index / (4 * width));
+            dbCanvasCtx.moveTo(corX, corY);
+            dbCanvasCtx.lineTo(corX+1, corY+1);
+            dbCanvasCtx.stroke();
+        }
+    }
+    /// END Canvas Code
     
     renderer.render( scene, camera );
 }
