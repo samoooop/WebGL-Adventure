@@ -7,6 +7,8 @@ var camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer();
 var dbCanvasDom = document.getElementById("debugCanvas");
 var dbCanvasCtx = dbCanvasDom.getContext("2d");
+var pixels = new Uint8Array(width * height * 4);
+var gl;
 renderer.setSize( width, height );
 GLDom.appendChild( renderer.domElement );
 
@@ -42,29 +44,36 @@ function render(frameTime, time) {
     cube.rotation.y += 0.001 * frameTime;
     // camera.position.y = cameraDefault.position.y + Math.sin(time / 1000);
     // camera.position.x = cameraDefault.position.y + Math.cos(time / 1000);
-    renderer.render( scene, camera, bufferTexture );
+    
+//     renderer.render( scene, camera, bufferTexture );
+    renderer.render( scene, camera );
 
-    var gl = renderer.getContext();
-    var pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+    if(gl === undefined)
+        gl = renderer.getContext();
     gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-    dbCanvasCtx.moveTo(10, 10);
-    dbCanvasCtx.lineTo(10+1, 10+1);
-    dbCanvasCtx.stroke();
-    dbCanvasCtx.moveTo(800, 400);
-    dbCanvasCtx.lineTo(0, 0);
-    dbCanvasCtx.stroke();
+    // dbCanvasCtx.moveTo(10, 10);
+    // dbCanvasCtx.lineTo(10+1, 10+1);
+    // dbCanvasCtx.stroke();
+    // dbCanvasCtx.moveTo(800, 400);
+    // dbCanvasCtx.lineTo(0, 0);
+    // dbCanvasCtx.stroke();
     /// Canvas Code
-    for(var index=0; index<height*width*4; index+=1){
+    var counter = 0;
+    dbCanvasCtx.clearRect(0, 0, dbCanvasDom.width, dbCanvasDom.height);
+    dbCanvasCtx.beginPath();
+    dbCanvasCtx.moveTo(0, 0);
+    for(var index=0; index<height*width*4; index+=4){
+//         if(counter++ > 2) break;
         if(pixels[index] != 0){
             var corX = (index / 4) % width;
             var corY = (index / (4 * width));
-            dbCanvasCtx.moveTo(corX, corY);
-            dbCanvasCtx.lineTo(corX+1, corY+1);
-            dbCanvasCtx.stroke();
+            dbCanvasCtx.lineTo(corX, corY);
         }
     }
+    dbCanvasCtx.closePath();
+    dbCanvasCtx.stroke();
     /// END Canvas Code
     
-    renderer.render( scene, camera );
+//     renderer.render( scene, camera );
 }
