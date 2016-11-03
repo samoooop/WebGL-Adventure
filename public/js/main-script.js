@@ -35,7 +35,7 @@ cameraDefault = {
 };
 
 // var bufferScene = new THREE.Scene();
-var bufferTexture = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter} );
+var bufferTexture = new THREE.WebGLRenderTarget( 30, 30, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
 
 var prevFrameTime = 0;
 var coreRender = function (time) {
@@ -52,12 +52,14 @@ function render(frameTime, time) {
     // camera.position.x = cameraDefault.position.y + Math.cos(time / 1000);
 
     renderer.render( scene, camera, bufferTexture );
+    renderer.readRenderTargetPixels(bufferTexture,0 ,0,width,height,pixels);
+    //console.log(pixels.filter(function(x){return x!=0}));
     // renderer.render( scene, camera );
 
     if(gl === undefined)
         gl = renderer.getContext();
     //gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-    renderer.readRenderTargetPixels(bufferTexture, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, pixels);
+    //renderer.readRenderTargetPixels(bufferTexture, 0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, pixels);
     // dbCanvasCtx.moveTo(10, 10);
     // dbCanvasCtx.lineTo(10+1, 10+1);
     // dbCanvasCtx.stroke();
